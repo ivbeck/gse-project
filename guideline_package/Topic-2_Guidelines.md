@@ -133,6 +133,30 @@ For each relevant guideline from readings:
 
 ---
 
+**Guideline 2.1.6: Intent Disambiguation via Interactive Testing Source**  
+**Source:** Fakhoury et al. (2024)
+**Description:** Developers should use automatically generated unit tests (TiCoder) as an interactive mechanism to formalize and clarify ambiguous natural language intent before finalizing code selection.
+**Reasoning:** Natural language is inherently informal and ambiguous, which makes it nearly difficult to automatically verify if a generated code snippet truly satisfies a user's intent. Without a checkable specification, users often accept "plausibly correct" code that contains subtle logical bugs.
+**Example:** For a function description requiring lowercase letters joined by an underscore, an LLM might generate code that incorrectly accepts "aa_bb_cc" when the user only intended for two sequences. By presenting the user with a test like text_lowercase_underscore("aa_bb_cc") == True?, the system allows the user to clarify their intent (by answering "No"), thereby formalizing the requirement.
+
+---
+
+**Guideline 2.1.7: Reduction of Developer's Cognitive Load**  
+**Source:** Fakhoury et al. (2024)
+**Description:** To improve developer performance, AI assistants should execute candidate code against user-validated tests to prune incorrect suggestions and present a reduced, ranked list of candidates.
+**Reasoning:** Reviewing a large list of AI-generated code suggestions is a high-effort task that increases cognitive load and the likelihood of human error. Studies show that developers spend more time reviewing code than writing it; pruning suggestions based on actual execution behavior significantly reduces mental demand and stress.
+**Example:** In a user study, participants using the TICODER workflow (which prunes code suggestions based on test feedback) reported significantly lower cognitive load (28.00–29.52) compared to those using a standard interface (45.46) where they had to manually scan all suggestions.
+
+---
+
+**Guideline 2.1.8: Human-in-the-Loop Validation of AI-Generated Tests Source**  
+**Source:** Fakhoury et al. (2024)
+**Description:** Developers must critically verify the correctness of AI-generated tests before using them as a filtering mechanism, as incorrect tests can lead to the pruning of valid code.
+**Reasoning:** LLMs are prone to generating incorrect tests or test outputs, particularly for complex edge cases.
+**Example:** In a study task involving a recursive binary search, 50% of participants incorrectly identified the expected output of an AI-generated test when the output was hidden, highlighting that humans are prone to making mistakes on edge cases that will then incorrectly prune correct code suggestions.
+
+---
+
 ### 2.2 Guidelines from Grey Literature / Practitioner Sources
 
 **Sources Explored:**
