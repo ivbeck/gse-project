@@ -61,11 +61,15 @@ Describe edge cases or situations where this guideline may not work well.
   Mitigation. Proc. ACM Softw. Eng. 2, ISSTA, Article ISSTA022 (July
   2025), 23 pages. https://doi.org/10.1145/3728894
 
+  -DONE
+
 - S. Fakhoury, A. Naik, G. Sakkas, S. Chakraborty and S. K. Lahiri,
   "LLM-Based Test-Driven Interactive Code Generation: User Study and
   Empirical Evaluation," in IEEE Transactions on Software Engineering,
   vol. 50, no. 9, pp. 2254-2268, Sept. 2024, doi:
   10.1109/TSE.2024.3428972. https://arxiv.org/abs/2404.10100
+
+  -DONE
 
 - Noble Saji Mathews and Meiyappan Nagappan. 2024. Test-Driven
   Development and LLM-based Code Generation. In Proceedings of the 39th
