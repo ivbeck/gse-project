@@ -288,7 +288,7 @@ Format same as above.
 
 **Prompts Used:**
 
-- `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.`
+- `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.]`
 
 **Extracted Guidelines:**  
 Format same as above.
