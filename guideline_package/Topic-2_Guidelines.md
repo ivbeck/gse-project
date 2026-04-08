@@ -171,11 +171,15 @@ For each relevant guideline from readings:
 **Extracted Guidelines:**  
 Format same as above.
 
+---
+
 **Guideline 2.2.1: Define Explicit Agent Roles for Coding Tasks**  
 **Source:** OpenAI Developers Prompt Engineering Guide  
 **Description:** Prompts should frame the model as a software engineering agent with clearly defined responsibilities and workflows.  
 **Reasoning:** Explicit role definition improves task understanding and leads to more structured, reliable outputs.  
-**Example:** "You are a software engineer responsible for implementing, testing, and validating a feature using the provided tools."
+**Example:** "You are a software engineer responsible for implementing, testing, and validating a feature using the provided tools."  
+**When to Apply:** When tasks involve multiple steps (e.g., coding, testing, debugging). When using tool-based workflows or agents. When consistency and reliability of outputs are important.  
+**When to Avoid:** For simple, one-off questions or small code snippets. When flexibility or creative exploration is preferred over strict structure.
 
 ---
 
@@ -183,7 +187,9 @@ Format same as above.
 **Source:** OpenAI Developers Prompt Engineering Guide  
 **Description:** Prompts should include explicit instructions and examples for how to use tools or function calls.  
 **Reasoning:** Concrete examples reduce ambiguity and increase adherence to expected workflows.  
-**Example:** Providing a sample `functions.run` call for executing code tasks.
+**Example:** Providing a sample `functions.run` call for executing code tasks.  
+**When to Apply:** This guideline should be applied when tasks require interaction with tools, APIs, or function calls, especially in structured or automated workflows where correct tool usage is critical. It is particularly useful in production settings or agent-based systems where consistency, reproducibility, and reliability of execution are important.  
+**When to Avoid:** This guideline should be avoided in simple tasks that do not involve tools or external function calls, or in exploratory scenarios where strict structure may limit flexibility. It may also be unnecessary when the task is purely conceptual and does not require execution or integration with external systems.
 
 ---
 
@@ -191,7 +197,9 @@ Format same as above.
 **Source:** OpenAI Developers Prompt Engineering Guide  
 **Description:** The model should be instructed to validate outputs via tests (e.g., unit tests or execution).  
 **Reasoning:** LLM-generated code may appear correct but fail functionally, testing ensures correctness.  
-**Example:** "Run unit tests after implementation and verify all pass before finalizing."
+**Example:** "Run unit tests after implementation and verify all pass before finalizing."  
+**When to Apply:** This guideline should be applied for any non-trivial coding task where correctness is important, especially in production, evaluation pipelines, or when generating algorithms and logic-heavy implementations. It is particularly useful in iterative workflows where outputs can be automatically tested and refined based on results.  
+**When to Avoid:** This guideline may be unnecessary for very simple or illustrative code snippets where correctness can be easily verified by inspection, or in early prototyping stages where speed and exploration are prioritized over full validation. It may also be impractical when no testing environment or execution capability is available.  
 
 ---
 
@@ -199,7 +207,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** The model should internally construct a quality rubric (5–7 criteria) to evaluate its output.  
 **Reasoning:** Self-evaluation improves output quality by enforcing structured reasoning and reflection.  
-**Example:** Internally assessing criteria like correctness, simplicity, performance, and usability before responding.
+**Example:** Internally assessing criteria like correctness, simplicity, performance, and usability before responding.  
+**When to Apply:** This guideline should be applied for complex or high-quality code generation tasks where multiple dimensions such as correctness, efficiency, and maintainability matter. It is especially useful in one-shot generation scenarios or when aiming for production-level outputs without extensive external feedback loops.  
+**When to Avoid:** This guideline may be unnecessary for simple or low-stakes tasks where a quick response is sufficient, as the added internal reasoning can increase latency. It may also be less effective when strict external constraints or evaluation criteria are already provided explicitly in the prompt.
 
 ---
 
@@ -207,7 +217,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** The model should refine its output iteratively until it meets high-quality standards.  
 **Reasoning:** First outputs are often suboptimal, iteration improves correctness and completeness.  
-**Example:** Rewriting a solution if it fails internal quality checks.
+**Example:** Rewriting a solution if it fails internal quality checks.  
+**When to Apply:** This guideline should be applied in complex or high-stakes coding tasks where correctness, robustness, and completeness are critical, especially in scenarios without immediate external validation. It is particularly effective in workflows that allow multiple passes, such as agent-based systems or structured prompting setups with refinement loops.  
+**When to Avoid:** This guideline may be unnecessary in simple tasks where the first response is likely sufficient, or in time-sensitive situations where latency must be minimized. It can also be inefficient when external evaluation mechanisms (e.g., tests or human review) already provide feedback for refinement.  
 
 ---
 
@@ -223,7 +235,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Generated code should follow the style, structure, and conventions of the existing codebase.  
 **Reasoning:** Consistency ensures seamless integration and reduces refactoring effort.  
-**Example:** Matching directory structure, naming conventions, and existing libraries.
+**Example:** Matching directory structure, naming conventions, and existing libraries.  
+**When to Apply:** This guideline should be applied whenever code is generated for human consumption, documentation, or integration into workflows where readability and clarity are important. It is especially useful in collaborative environments, educational contexts, or when outputs are reused directly in development environments.  
+**When to Avoid:** This guideline may be less necessary in purely machine-to-machine interactions or pipelines where formatting is stripped or irrelevant. It can also be excessive for very short responses or informal discussions where strict formatting does not add meaningful value.  
 
 ---
 
@@ -231,7 +245,9 @@ Format same as above.
 **Source:** OpenAI Developers Prompt Engineering Guide  
 **Description:** Generated code should emphasize modularity and reuse of components.  
 **Reasoning:** Modular design improves maintainability and scalability of generated solutions.  
-**Example:** Extracting repeated UI logic into reusable components.
+**Example:** Extracting repeated UI logic into reusable components.  
+**When to Apply:** This guideline should be applied in medium to large coding tasks, especially when building systems, applications, or features that may evolve over time. It is particularly useful in collaborative environments, frontend development, and projects where code reuse, maintainability, and scalability are important.  
+**When to Avoid:** This guideline may be unnecessary for very small or one-off scripts where modularization would introduce unnecessary complexity. It can also be less suitable in rapid prototyping scenarios where speed is prioritized over long-term maintainability.  
 
 ---
 
@@ -239,7 +255,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Prompts should encourage planning steps before producing the final solution.  
 **Reasoning:** Structured planning leads to more coherent and complete implementations.  
-**Example:** Defining requirements and approach before writing code.
+**Example:** Defining requirements and approach before writing code.  
+**When to Apply:** This guideline should be applied in complex or multi-step coding tasks where understanding requirements, edge cases, and system design is important. It is especially useful for algorithmic problems, system design tasks, and scenarios where correctness and completeness are critical.  
+**When to Avoid:** This guideline may be unnecessary for simple or well-defined tasks where planning adds little value and increases response time. It can also be less suitable in time-constrained situations or when rapid iteration is preferred over detailed upfront reasoning.  
 
 ---
 
@@ -247,7 +265,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Prompts should specify directory layouts and separation between components (e.g., UI, logic, API).  
 **Reasoning:** Clear structure enables better organization and integration into larger systems.  
-**Example:** Separating `/components`, `/hooks`, `/lib`, and `/api` directories.
+**Example:** Separating `/components`, `/hooks`, `/lib`, and `/api` directories.  
+**When to Apply:** This guideline should be applied when generating code for larger applications, multi-file projects, or systems that require clear organization and maintainability. It is particularly useful in frontend/backend projects, team environments, and when code needs to integrate into an existing codebase.  
+**When to Avoid:** This guideline may be unnecessary for small scripts, single-file solutions, or quick prototypes where introducing a full project structure would add unnecessary complexity. It can also be excessive when the task scope does not require modular separation.  
 
 ---
 
@@ -255,7 +275,9 @@ Format same as above.
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Prompts should include constraints on typography, color usage, spacing, interaction states, and accessibility.  
 **Reasoning:** Explicit UI/UX guidance ensures high-quality and usable frontend outputs.  
-**Example:** Using consistent spacing, limited color palettes, and accessible components.
+**Example:** Using consistent spacing, limited color palettes, and accessible components.  
+**When to Apply:** This guideline should be applied when generating frontend interfaces, especially in user-facing applications where usability, consistency, and accessibility are critical. It is particularly important in production environments, design-sensitive projects, and when adhering to design systems or accessibility standards.  
+**When to Avoid:** This guideline is unnecessary for backend-focused tasks or purely functional prototypes where UI quality is not a priority. It can also be excessive in early-stage prototyping where rapid iteration is more important than polished design.  
 
 ---
 
@@ -277,7 +299,9 @@ Format same as above.
 **Source:** Qwen 3.6 Plus / Gemma 4 26B A4B
 **Description:** Break complex feature requests into isolated, atomic, and testable units (functions or specific modules) before prompting.  
 **Reasoning:** LLM performance degrades with task complexity and context length, smaller scopes reduce logical hallucinations and context window drift.  
-**Example:** Instead of "Build a full web scraper," prompt for "A function that extracts all `<a>` tags from a BeautifulSoup object."
+**Example:** Instead of "Build a full web scraper," prompt for "A function that extracts all `<a>` tags from a BeautifulSoup object."  
+**When to Apply:** This guideline should be applied for complex systems, multi-step features, or tasks that involve multiple components, especially when accuracy and correctness are critical. It is particularly effective when working with long prompts, limited context windows, or when combining LLM outputs into larger pipelines.  
+**When to Avoid:** This guideline may be unnecessary for simple, well-defined tasks that can be solved in a single step without ambiguity. It can also be less efficient when the overhead of decomposition outweighs the benefits, such as in very small scripts or exploratory prototyping.  
 
 ---
 
@@ -285,7 +309,9 @@ Format same as above.
 **Source:** Qwen 3.6 Plus / Gemma 4 26B A4B  
 **Description:** Prompt the model to produce a comprehensive unit test suite before or alongside the logic, then feed any execution failures back into the model.  
 **Reasoning:** Models optimize for surface-level plausibility, automated feedback loops provide a truth mechanism that can reduce bug injection by 40-60%.  
-**Example:** "Generate a suite of unit tests in pytest that covers edge cases for this logic" followed by "Here is the traceback from the failed test, please fix the implementation."
+**Example:** "Generate a suite of unit tests in pytest that covers edge cases for this logic" followed by "Here is the traceback from the failed test, please fix the implementation."  
+**When to Apply:** This guideline should be applied in scenarios where correctness is critical, such as production code, algorithmic problems, or complex logic with many edge cases. It is particularly effective when an execution environment is available to run tests and provide feedback, enabling iterative improvement loops.  
+**When to Avoid:** This guideline may be less suitable when no execution or testing environment is available, or when tasks are too simple to justify the overhead of creating tests. It can also slow down rapid prototyping workflows where speed is prioritized over full correctness verification.  
 
 ---
 
@@ -293,7 +319,9 @@ Format same as above.
 **Source:** GPT-5.4 / Claude Opus 4.6  
 **Description:** Ground all generation in the local codebase by injecting relevant symbols, dependency graphs, and existing patterns (Retrieval-Augmented Generation).  
 **Reasoning:** To maintain architectural consistency, the model must differentiate between generic training data and local project standards, grounding reduces context drift by ~30%.  
-**Example:** Including specific error-handling wrappers or interface definitions from the current repository in the system prompt.
+**Example:** Including specific error-handling wrappers or interface definitions from the current repository in the system prompt.  
+**When to Apply:** This guideline should be applied when working within existing codebases, especially large or complex repositories with established conventions, dependencies, and architectural patterns. It is particularly useful for tasks involving integration, refactoring, or extending existing systems where consistency and correctness depend on project-specific context.  
+**When to Avoid:** This guideline may be unnecessary for standalone tasks, greenfield projects, or simple scripts where no prior context exists. It can also introduce overhead if retrieving and injecting context is costly or if the retrieved information is noisy or irrelevant, potentially confusing the model.
 
 ---
 
@@ -301,7 +329,9 @@ Format same as above.
 **Source:** Claude Opus 4.6 / GPT-5.4
 **Description:** Use a secondary "Reviewer" turn to force the model to critique its own code for security flaws, memory leaks, or SOLID violations.  
 **Reasoning:** LLMs are empirically better at identifying errors in existing text than they are at avoiding them during initial generation.  
-**Example:** "Review the code above for potential race conditions or security vulnerabilities before I finalize the pull request."
+**Example:** "Review the code above for potential race conditions or security vulnerabilities before I finalize the pull request."  
+**When to Apply:** This guideline should be applied in high-stakes or production-level coding tasks where robustness, security, and maintainability are critical. It is particularly useful in workflows that allow multiple interaction steps, such as code reviews, pull request preparation, or agent-based pipelines with separate generation and evaluation phases.  
+**When to Avoid:** This guideline may be unnecessary for simple or low-risk tasks where the overhead of an additional review step outweighs the benefits. It can also be less effective in one-shot interactions where no iterative feedback loop is possible or when time constraints require immediate results.  
 
 ---
 
@@ -316,8 +346,7 @@ Format same as above.
 [2] [`OpenAI Developers GPT-5 prompting guide`](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#agentic-workflow-predictability)
 
 **LLM Prompts (Full Log):**  
-See Appendix A or provide a link to a separate file with full prompt-response logs.
-
+[`[Log Link to Github]`](https://raw.githubusercontent.com/ivbeck/gse-project/refs/heads/main/guideline_package/Topic-2_Logs.md)
 ---
 
 ## 4. Appendix (Optional)
