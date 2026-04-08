@@ -243,7 +243,7 @@ Format same as above.
 
 ---
 
-**Guideline 2.2.13: Define Project Structure and Separation of Concerns**  
+**Guideline 2.2.10: Define Project Structure and Separation of Concerns**  
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Prompts should specify directory layouts and separation between components (e.g., UI, logic, API).  
 **Reasoning:** Clear structure enables better organization and integration into larger systems.  
@@ -251,7 +251,7 @@ Format same as above.
 
 ---
 
-**Guideline 2.2.14: Enforce UI/UX and Accessibility Best Practices (Frontend)**  
+**Guideline 2.2.11: Enforce UI/UX and Accessibility Best Practices (Frontend)**  
 **Source:** OpenAI Developers GPT-5 Prompting Guide  
 **Description:** Prompts should include constraints on typography, color usage, spacing, interaction states, and accessibility.  
 **Reasoning:** Explicit UI/UX guidance ensures high-quality and usable frontend outputs.  
@@ -267,8 +267,6 @@ Format same as above.
 **Prompts Used:**
 
 - `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.`
-- `[Prompt 2]`
-- `[Prompt 3]`
 
 **Extracted Guidelines:**  
 Format same as above.
