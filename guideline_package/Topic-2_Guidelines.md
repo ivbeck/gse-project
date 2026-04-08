@@ -164,31 +164,146 @@ For each relevant guideline from readings:
 ### 2.2 Guidelines from Grey Literature / Practitioner Sources
 
 **Sources Explored:**
-
-- `[Blog post 1]`
-- `[Documentation 1]`
-- `[Tool guide 1]`
-- `[Community discussion 1]`
+- **Blog posts:**
+  - `[Blog Post 1] OpenAI Developers Promp Engineering`
+  - `[Blog Post 2] OpenAI Developers GPT-5 prompting guide`
 
 **Extracted Guidelines:**  
 Format same as above.
+
+**Guideline 2.2.1: Define Explicit Agent Roles for Coding Tasks**  
+**Source:** OpenAI Developers Prompt Engineering Guide  
+**Description:** Prompts should frame the model as a software engineering agent with clearly defined responsibilities and workflows.  
+**Reasoning:** Explicit role definition improves task understanding and leads to more structured, reliable outputs.  
+**Example:** "You are a software engineer responsible for implementing, testing, and validating a feature using the provided tools."
+
+---
+
+**Guideline 2.2.2: Enforce Structured Tool Usage with Examples**  
+**Source:** OpenAI Developers Prompt Engineering Guide  
+**Description:** Prompts should include explicit instructions and examples for how to use tools or function calls.  
+**Reasoning:** Concrete examples reduce ambiguity and increase adherence to expected workflows.  
+**Example:** Providing a sample `functions.run` call for executing code tasks.
+
+---
+
+**Guideline 2.2.3: Require Testing and Validation of Generated Code**  
+**Source:** OpenAI Developers Prompt Engineering Guide  
+**Description:** The model should be instructed to validate outputs via tests (e.g., unit tests or execution).  
+**Reasoning:** LLM-generated code may appear correct but fail functionally, testing ensures correctness.  
+**Example:** "Run unit tests after implementation and verify all pass before finalizing."
+
+---
+
+**Guideline 2.2.4: Use Internal Rubrics for Self-Evaluation**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** The model should internally construct a quality rubric (5–7 criteria) to evaluate its output.  
+**Reasoning:** Self-evaluation improves output quality by enforcing structured reasoning and reflection.  
+**Example:** Internally assessing criteria like correctness, simplicity, performance, and usability before responding.
+
+---
+
+**Guideline 2.2.5: Encourage Iterative Refinement Until Quality is Met**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** The model should refine its output iteratively until it meets high-quality standards.  
+**Reasoning:** First outputs are often suboptimal, iteration improves correctness and completeness.  
+**Example:** Rewriting a solution if it fails internal quality checks.
+
+---
+
+**Guideline 2.2.6: Enforce Structured Markdown Output for Code**  
+**Source:** OpenAI Developers Prompt Engineering Guide  
+**Description:** Outputs should follow strict Markdown conventions (code blocks, inline code, lists).  
+**Reasoning:** Consistent formatting improves readability and usability of generated code.  
+**Example:** Using fenced code blocks for implementations and backticks for file paths or functions.
+
+---
+
+**Guideline 2.2.7: Ensure Alignment with Existing Codebase Standards**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** Generated code should follow the style, structure, and conventions of the existing codebase.  
+**Reasoning:** Consistency ensures seamless integration and reduces refactoring effort.  
+**Example:** Matching directory structure, naming conventions, and existing libraries.
+
+---
+
+**Guideline 2.2.8: Promote Modular and Reusable Code Design**  
+**Source:** OpenAI Developers Prompt Engineering Guide  
+**Description:** Generated code should emphasize modularity and reuse of components.  
+**Reasoning:** Modular design improves maintainability and scalability of generated solutions.  
+**Example:** Extracting repeated UI logic into reusable components.
+
+---
+
+**Guideline 2.2.9: Plan Before Generating Code (Structured Thinking)**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** Prompts should encourage planning steps before producing the final solution.  
+**Reasoning:** Structured planning leads to more coherent and complete implementations.  
+**Example:** Defining requirements and approach before writing code.
+
+---
+
+**Guideline 2.2.13: Define Project Structure and Separation of Concerns**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** Prompts should specify directory layouts and separation between components (e.g., UI, logic, API).  
+**Reasoning:** Clear structure enables better organization and integration into larger systems.  
+**Example:** Separating `/components`, `/hooks`, `/lib`, and `/api` directories.
+
+---
+
+**Guideline 2.2.14: Enforce UI/UX and Accessibility Best Practices (Frontend)**  
+**Source:** OpenAI Developers GPT-5 Prompting Guide  
+**Description:** Prompts should include constraints on typography, color usage, spacing, interaction states, and accessibility.  
+**Reasoning:** Explicit UI/UX guidance ensures high-quality and usable frontend outputs.  
+**Example:** Using consistent spacing, limited color palettes, and accessible components.
 
 ---
 
 ### 2.3 Guidelines from LLM Experimentation
 
 **Models Used:**
-
-- `[e.g., GPT-5.2, Claude 4.5 Sonnet, DeepSeek Coder, GitHub Copilot (Ask vs Agent etc.)]`
+- `[Gemma 4 26B A4B, GPT-5.3, GPT-5.4, Qwen3.6 Plus, Claude Opus 4.6]`
 
 **Prompts Used:**
 
-- `[Prompt 1]`
+- `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.`
 - `[Prompt 2]`
 - `[Prompt 3]`
 
 **Extracted Guidelines:**  
 Format same as above.
+
+---
+
+**Guideline 2.3.1: Atomic Task Decomposition**  
+**Source:** Qwen 3.6 Plus / Gemma 4 26B A4B
+**Description:** Break complex feature requests into isolated, atomic, and testable units (functions or specific modules) before prompting.  
+**Reasoning:** LLM performance degrades with task complexity and context length, smaller scopes reduce logical hallucinations and context window drift.  
+**Example:** Instead of "Build a full web scraper," prompt for "A function that extracts all `<a>` tags from a BeautifulSoup object."
+
+---
+
+**Guideline 2.3.2: Test-Driven Verification Loop**  
+**Source:** Qwen 3.6 Plus / Gemma 4 26B A4B  
+**Description:** Prompt the model to produce a comprehensive unit test suite before or alongside the logic, then feed any execution failures back into the model.  
+**Reasoning:** Models optimize for surface-level plausibility, automated feedback loops provide a truth mechanism that can reduce bug injection by 40-60%.  
+**Example:** "Generate a suite of unit tests in pytest that covers edge cases for this logic" followed by "Here is the traceback from the failed test, please fix the implementation."
+
+---
+
+**Guideline 2.3.3: Context Hydration via RAG**  
+**Source:** GPT-5.4 / Claude Opus 4.6  
+**Description:** Ground all generation in the local codebase by injecting relevant symbols, dependency graphs, and existing patterns (Retrieval-Augmented Generation).  
+**Reasoning:** To maintain architectural consistency, the model must differentiate between generic training data and local project standards, grounding reduces context drift by ~30%.  
+**Example:** Including specific error-handling wrappers or interface definitions from the current repository in the system prompt.
+
+---
+
+**Guideline 2.3.4: Mandatory Self-Correction Cycles**  
+**Source:** Claude Opus 4.6 / GPT-5.4
+**Description:** Use a secondary "Reviewer" turn to force the model to critique its own code for security flaws, memory leaks, or SOLID violations.  
+**Reasoning:** LLMs are empirically better at identifying errors in existing text than they are at avoiding them during initial generation.  
+**Example:** "Review the code above for potential race conditions or security vulnerabilities before I finalize the pull request."
 
 ---
 
@@ -199,8 +314,8 @@ Format same as above.
 [2] `[Full citation]`
 
 **Grey Literature References:**  
-[1] `[Blog post title and URL]`  
-[2] `[Documentation title and URL]`
+[1] [`OpenAI Developers Prompt engineering`](https://developers.openai.com/api/docs/guides/prompt-engineering?prompt-example=prompt#choosing-a-model)<br>
+[2] [`OpenAI Developers GPT-5 prompting guide`](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#agentic-workflow-predictability)
 
 **LLM Prompts (Full Log):**  
 See Appendix A or provide a link to a separate file with full prompt-response logs.
