@@ -77,22 +77,32 @@ Describe edge cases or situations where this guideline may not work well.
   '24). Association for Computing Machinery, New York, NY, USA, 1583–1594.
   https://doi.org/10.1145/3691620.3695527
 
+  -DONE
+
 - Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for
   Coding Agents?. https://arxiv.org/abs/2602.11988
+
+  -DONE
 
 - Can LLMs Keep Up with Library Changes? An Exploratory Study on
   LLM-Generated Code, Xiangrong Lin (Zhejiang University, China), Jiakun
   Liu (Harbin Institute of Technology, China), Lingfeng Bao (Zhejiang
   University, China)
 
+  -DONE
+
 - Sapkota, Ranjan, Konstantinos I. Roumeliotis, and Manoj Karkee. "Vibe
   coding vs. agentic coding: Fundamentals and practical implications of
   agentic ai." arXiv preprint arXiv:2505.19443 (2025).
   https://arxiv.org/abs/2505.19443
 
+  -DONE
+
 - Schulhoff, Sander, et al. "The prompt report: A systematic survey of
   prompt engineering techniques." arXiv preprint arXiv:2406.06608 (2024).
   https://arxiv.org/abs/2406.06608
+
+  -DONE
 
 **Extracted Guidelines:**  
 For each relevant guideline from readings:
@@ -106,10 +116,10 @@ For each relevant guideline from readings:
 ---
 
 **Guideline 2.1.2: Prioritization of Non-Functional Security Requirements**  
-**Source:** Zhang et al. (2025)
-**Description:** Generated code must be specifically checked for non-functional requirements such as security to prevent the adoption of unsafe coding patterns from the models' training data.
-**Reasoning:** LLMs often reflect problematic patterns from their training corpora. They may favor insecure APIs if they are widespread in public repositories, leading to vulnerabilities like SQL injection or insecure deserialization.
-**Example:** Zhang et al. (2025) show that models frequently generate the insecure yaml.load() function instead of the safer alternative yaml.safe_load(), as the insecure pattern appears in hundreds of thousands of lines of code in the training data.
+**Source:** Zhang et al. (2025); Sapkota et al. (2025)  
+**Description:** Generated code must be specifically checked for non-functional requirements such as security to prevent the adoption of unsafe coding patterns from the models' training data.  
+**Reasoning:** LLMs often reflect problematic patterns from their training corpora. They may favor insecure APIs if they are widespread in public repositories, leading to vulnerabilities like SQL injection or insecure deserialization. Sapkota et al. (2025) identify three recurring vibe coding security risks: hardcoded secrets (plaintext API keys/passwords in generated code), insecure defaults (missing input sanitization, overly permissive CORS headers), and no audit trails.  
+**Example:** Zhang et al. (2025) show that models frequently generate the insecure yaml.load() instead of yaml.safe_load(). Similarly, vibe-coded authentication snippets often include `SECRET_KEY = "mysecret"` hardcoded in plain text (Sapkota et al., 2025).
 
 ---
 
@@ -161,6 +171,148 @@ For each relevant guideline from readings:
 
 ---
 
+**Guideline 2.1.9: Provide Tests Alongside Problem Statements for LLM Code Generation (TDD Approach)**  
+**Source:** Mathews & Nagappan (2024)  
+**Description:** When prompting an LLM to generate code, supply human-written unit tests alongside the problem statement rather than relying on the problem statement alone. Tests serve as both a formal specification and a verification mechanism, enabling the LLM to generate code that adheres more closely to the intended requirements.  
+**Reasoning:** Empirically, providing tests in addition to the problem statement contributed to solving an additional 12.78% of MBPP problems and 9.15% of HumanEval problems (an overall improvement of 18.04% and 14.64% respectively, validated against private test suites). Tests disambiguate natural language descriptions and surface edge cases that the LLM would otherwise miss. This mirrors the TDD principle that tests written upfront ensure all code functions as intended.  
+**Example:** Instead of prompting: *"Write a function that checks if a string contains only lowercase letters joined by underscores,"* supply the problem statement together with concrete test cases:
+```python
+assert check_string("ab_cd") == True
+assert check_string("Ab_cd") == False
+assert check_string("ab__cd") == False
+```
+The LLM uses the tests as a specification to refine its logic, catching edge cases (double underscores, mixed case) it would likely miss from the prose description alone.
+
+---
+
+**Guideline 2.1.10: Use Iterative Remediation Loops to Self-Correct Failed Code**  
+**Source:** Mathews & Nagappan (2024)  
+**Description:** After an LLM generates code that fails tests, feed the failure information (stack traces, failing test cases, crash logs) back into the LLM in a remediation loop rather than discarding the attempt. Limit the loop to 3–5 iterations, as gains diminish rapidly beyond that point.  
+**Reasoning:** Remediation loops yielded an additional 5.26% improvement on MBPP and 5.49% on HumanEval on top of the gains from supplying tests, for a total improvement of up to 18% over baseline. The first iteration typically fixes obvious errors (missing imports, type conversions, wrong signatures); the second addresses deeper logical and edge-case issues. Beyond three to four iterations the remediation advice becomes repetitive and produces diminishing returns — in Mathews & Nagappan's study, no problem required all five allowed attempts to be solved.  
+**Example:** A typical remediation flow using the TGen framework:
+1. Generate code from problem statement + tests → fails edge case for empty input.
+2. Feed failure: *"Test `assert f([]) == 0` failed with `IndexError: list index out of range`. Fix the implementation."*
+3. LLM corrects boundary check → code passes.
+
+Problems that benefit most from remediation: edge case handling, data type/logical errors, imprecise mathematical computations, and text manipulation. Problems that rarely recover even after five iterations: fundamental core-logic misunderstandings and complex multi-condition input/output handling.
+
+---
+
+**Guideline 2.1.11: Prefer a Small Set of High-Quality, Diverse Tests Over Many Low-Quality Tests**  
+**Source:** Mathews & Nagappan (2024)  
+**Description:** When preparing tests to supply to an LLM, prioritize test diversity (different input classes, boundary conditions, edge cases) over sheer quantity. For function-level tasks, roughly 3 well-chosen tests already captures most of the correctness benefit; adding more tests beyond this yields diminishing returns and can introduce the "lost in the middle" problem where the LLM starts ignoring earlier context.  
+**Reasoning:** In Mathews & Nagappan's experiments, correctness showed an upward trend as the number of supplied tests increased, but began to plateau for MBPP (simpler problems) at around three tests. For HumanEval the upward trend continued more steadily, suggesting the benefit depends on problem complexity. Crucially, EvalPlus highlighted that low-quality or automatically generated tests can *reduce* pass@k by 19.3–28.9%, meaning poorly constructed tests actively mislead the model. The quality and variety of tests matters more than their count.  
+**Example:** For a function that converts a list of integers to a comma-separated string, three targeted tests cover distinct classes:
+```python
+assert convert([1, 2, 3]) == "1,2,3"   # standard case
+assert convert([]) == ""                # empty input boundary
+assert convert([-1]) == "-1"            # negative number edge case
+```
+Adding 20 further tests of the same input class (e.g., `convert([4,5,6])`) adds little value and wastes context window budget.
+
+---
+
+**Guideline 2.1.12: Keep Repository Context Files (AGENTS.md / CLAUDE.md) Minimal and Human-Written**  
+**Source:** Gloaguen et al. (2026)  
+**Description:** When providing a repository context file to a coding agent, write it manually and limit it to project-specific tooling commands and non-obvious constraints. Do not auto-generate it with an LLM, and do not include codebase overviews or directory listings.  
+**Reasoning:** Across four coding agents and two benchmarks, LLM-generated context files *reduced* task success by ~3% on average while raising inference cost by over 20%. Developer-written files yielded only a marginal +4% improvement. Codebase overviews were found ineffective — agents do not navigate to relevant files faster with them, as they already discover structure through exploration. Unnecessary instructions make tasks harder by consuming context and causing agents to over-explore.  
+**Example:**  
+Good — a minimal context file:
+```
+Use `uv` for all package management.
+Run tests with `pytest -x`.
+```
+Bad — a 600-word file with directory trees, architecture overviews, and style guides. Agents explore the repo anyway and will spend extra steps re-reading the context file without gaining accuracy.
+
+---
+
+**Guideline 2.1.13: Do Not Use LLM-Generated Context Files as a Substitute for Proper Documentation**  
+**Source:** Gloaguen et al. (2026)  
+**Description:** Maintain proper repository documentation (READMEs, `docs/`) rather than relying on auto-generated context files to fill that role. LLM-generated context files are largely redundant with existing docs and provide no additional benefit when docs are present.  
+**Reasoning:** When all existing documentation was removed from repositories, LLM-generated context files improved agent performance by 2.7% — suggesting their only utility is as a proxy for missing docs. In repositories with proper documentation, they add nothing. Developer-written context files outperform LLM-generated ones precisely because they contain non-redundant, specific information not already present in the codebase.
+
+---
+
+**Guideline 2.1.14: Use Few-Shot Chain-of-Thought Prompting for Non-Trivial Code Generation**  
+**Source:** Schulhoff et al. (2025)  
+**Description:** For complex coding tasks, include a small number of worked examples (2–10) in the prompt, where each example shows an input, a reasoning chain, and the correct output or code. This combines few-shot prompting with Chain-of-Thought (CoT) to guide the model through both *how to reason* and *what to produce*.  
+**Reasoning:** Across a systematic benchmark of 2,800 MMLU questions with GPT-3.5-turbo, Few-Shot CoT with Self-Consistency achieved the highest accuracy (0.692), significantly above the Zero-Shot baseline (0.627). The survey covers 58 text-based prompting techniques and identifies Few-Shot CoT as consistently among the best-performing. For coding, the reasoning chain in examples can demonstrate how to break down a problem (e.g., "First handle the empty list case, then iterate…") before writing the implementation.  
+**Example:**  
+```
+# Example 1
+# Task: Return the sum of even numbers in a list.
+# Reasoning: Iterate through the list, filter even numbers (n % 2 == 0), sum them.
+def sum_even(nums): return sum(n for n in nums if n % 2 == 0)
+
+# Example 2
+# Task: Return the longest word in a sentence.
+# Reasoning: Split sentence into words, find the word with max length.
+def longest_word(s): return max(s.split(), key=len)
+
+# Now solve: Return the product of all odd numbers in a list.
+# Reasoning: ...
+```
+
+---
+
+**Guideline 2.1.15: Apply Self-Consistency Sampling for High-Stakes Code Generation**  
+**Source:** Schulhoff et al. (2025)  
+**Description:** For critical code generation tasks, generate multiple independent candidate solutions (typically 3–5) using a non-zero temperature, then select the solution that appears most frequently or is agreed upon by the majority.  
+**Reasoning:** Self-Consistency (Wang et al., 2022, as surveyed by Schulhoff et al.) exploits the fact that multiple reasoning paths can converge on the same correct answer. In benchmarking it consistently improved results over single-sample CoT. For code, this mitigates the non-determinism of LLM outputs — a solution that is produced by 3 out of 5 independent runs is far more likely to be correct than one produced once. This pairs well with automated test execution (see Guideline 2.1.10): run all candidates against tests and pick the one that passes most.  
+**Example:** Generate 5 candidate implementations of a sorting algorithm with temperature=0.7, run all against the test suite, and return the implementation that passes the most tests. If multiple pass all tests, prefer the most frequently generated one.
+
+---
+
+**Guideline 2.1.16: Match the AI Coding Paradigm to Task Scope and Risk Level**  
+**Source:** Sapkota et al. (2025)  
+**Description:** Choose between *vibe coding* (iterative, conversational, human-validates) and *agentic coding* (autonomous, plan-execute-test loop) based on task scope, risk, and required reliability. Do not apply agentic autonomy to tasks that benefit from tight creative control, and do not apply manual vibe workflows to tasks requiring reproducible, large-scale automation.  
+**Reasoning:** Sapkota et al. present a detailed taxonomy showing these paradigms differ fundamentally in autonomy level, developer role, validation pipeline, and ideal use case. Using the wrong paradigm for a task increases risk: vibe coding in production pipelines lacks built-in safety mechanisms; agentic coding for exploratory UI design produces predictable but inflexible outputs where creativity is needed.
+
+**When to Apply:** When starting a task, explicitly decide which mode fits before prompting. For complex projects, start with vibe coding for ideation then transition to agentic execution for production.
+| Scenario | Use Vibe Coding | Use Agentic Coding |
+|---|---|---|
+| Rapid prototyping / MVP | ✓ | |
+| Learning a new framework | ✓ | |
+| CI/CD pipeline automation | | ✓ |
+| Large-scale codebase refactoring | | ✓ |
+| Regression bug fixing with logs | | ✓ |
+| Frontend ideation / UI design | ✓ | |
+
+---
+
+**Guideline 2.1.17: Use Frequent Version Control Checkpoints During AI-Assisted Development**  
+**Source:** Sapkota et al. (2025)  
+**Description:** Commit code to version control frequently during AI-assisted development sessions — especially before accepting large AI-generated changes — to create reversible "save points".  
+**Reasoning:** LLM outputs are generative and unpredictable. In vibe coding, the developer accepts AI-generated code that may introduce errors, regressions, or security issues that are only discovered after further iteration. Without frequent commits, reverting to a known-good state requires manual reconstruction. Git branching also enables safe parallel experimentation with different AI-generated approaches without risking the main codebase.  
+**Example:** Before prompting an LLM to refactor a module: `git commit -m "pre-refactor checkpoint"`. If the AI-generated refactor introduces a regression, `git checkout` instantly restores the working state. Use feature branches for each distinct AI-assisted experiment.
+
+---
+
+**Guideline 2.1.18: Prompt for Desired Functionality Rather Than Naming Specific Libraries**  
+**Source:** Lin et al. (2026)  
+**Description:** When asking an LLM to generate code, describe the required functionality and constraints (security, performance, up-to-date) rather than naming a specific library. If a library must be mentioned because it is deprecated or being migrated from, explicitly state its deprecated status and name the recommended modern replacement.  
+**Reasoning:** LLMs are trained on historical code and have a knowledge cutoff, meaning their training corpus contains substantial usage of deprecated libraries. When a deprecated library is named in the prompt, LLMs tend to use it directly (precision ~55%) rather than suggesting a modern alternative. Functionality-driven prompts let the model choose the best current library (precision ~84%). When explicitly told a library is deprecated and given its replacement, precision jumps to ~98% across all tested models (Qwen, LLaMA, DeepSeek, GPT-3.5/4o). LLMs struggle most with security-sensitive serialization libraries (e.g., `pickle`, LRP 37%) and libraries with no clear one-to-one successor (e.g., `twisted` → `asyncio`).  
+**Example:**  
+Instead of:
+```
+# BAD: names a deprecated library
+Use pickle to serialize this object.
+```
+Write:
+```
+# GOOD: describes functionality
+Serialize this Python object to a file in a secure, modern format suitable for production use.
+```
+Or when migration is the topic:
+```
+# GOOD: explicit deprecation + alternative
+Note: pickle is deprecated for security reasons (arbitrary code execution risk). 
+Use json or joblib instead. Serialize the following object securely.
+```
+**When to Avoid:** If the prompt is about migrating *away* from a specific old library, naming it is necessary — but always pair it with its deprecated status and the recommended alternative.
+
+---
+
 ### 2.2 Guidelines from Grey Literature / Practitioner Sources
 
 **Sources Explored:**
@@ -196,7 +348,7 @@ Format same as above.
 **Guideline 2.2.3: Require Testing and Validation of Generated Code**  
 **Source:** OpenAI Developers Prompt Engineering Guide  
 **Description:** The model should be instructed to validate outputs via tests (e.g., unit tests or execution).  
-**Reasoning:** LLM-generated code may appear correct but fail functionally, testing ensures correctness.  
+**Reasoning:** LLM-generated code may appear correct but fail functionally, testing ensures correctness. This is further supported empirically by Mathews & Nagappan (2024), who show that supplying tests alongside the problem statement improves code correctness by 9–18% across standard benchmarks; iterative remediation using failed test output adds a further 5–6%.  
 **Example:** "Run unit tests after implementation and verify all pass before finalizing."  
 **When to Apply:** This guideline should be applied for any non-trivial coding task where correctness is important, especially in production, evaluation pipelines, or when generating algorithms and logic-heavy implementations. It is particularly useful in iterative workflows where outputs can be automatically tested and refined based on results.  
 **When to Avoid:** This guideline may be unnecessary for very simple or illustrative code snippets where correctness can be easily verified by inspection, or in early prototyping stages where speed and exploration are prioritized over full validation. It may also be impractical when no testing environment or execution capability is available.  
