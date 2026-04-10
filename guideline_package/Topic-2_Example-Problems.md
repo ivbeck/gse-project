@@ -12,7 +12,7 @@
 Instead of asking for a specific library (which might lead the LLM to use deprecated methods like `yaml.load`), the developer describes the *requirement* and the *constraint*.
 
 **Prompt:**
-> "I need to replace a `pickle`-based serialization module with a modern, secure alternative in Python. The new implementation must prevent arbitrary code execution during deserialization and be suitable for production session data. Suggest a modern format (like JSON or a secure binary alternative) and provide the implementation for `save_session(data, path)` and `load_session(path)` functions."
+> "I need to replace a `pickle`-based serialization module with a modern, secure alternative in Python. The new implementation must prevent arbitrary code execution during deserialization and be suitable for production session data. Suggest a modern format (like JSON or a safe binary alternative) and provide the implementation for `save_session(data, path)` and `load_session(path)` functions."
 
 **Guideline-Compliant Solution:**
 The LLM selects `json` or a cryptographically signed alternative because it was prompted for *functionality* and *security constraints* rather than a library name.
@@ -73,10 +73,9 @@ After the fix, the developer prompts:
 
 ---
 
-## Summary of Guidelines Applied
-| Problem | Key Guideline(s) Used |
-| :--- | :--- |
-| Legacy Migration | Guideline 5 (Defensive Functional Prompting) |
-| Complex Parsing | Guideline 4 (Atomic Decomposition) & Guideline 2 (TDD) |
-| Large Repository Work | Guideline 1 (Context-Aware Grounding) |
-| Robustness/Debugging | Guideline 3 (Remediation) & Guideline 2.3.4 (Self-Correction) |
+## Example 5: Secure, library-agnostic serialization migration
+- Guideline mapping: 5 (Defensive Prompting), 2.1.11 (quality tests)
+- Scenario: Replace a Python app’s pickle-based session storage with a secure format.
+- Prompt (teacher-facing):
+  - Describe the goal and constraints (prevent deserialization code execution; production-ready; no deprecated libs).
+  - Ask for a concrete implementation of save_session(data, path) and load_session(path) using a secure format (JSON or a safe binary
