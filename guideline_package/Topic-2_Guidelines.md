@@ -111,7 +111,7 @@ For each relevant guideline from readings:
 **Source:** Zhang et al. (2025)
 **Description:** Code generation using LLMs should move beyond creating isolated functions and incorporate specific project context, including user-defined dependencies, attributes, and non-code resources like configuration files.
 **Reasoning:** In practice, over 70% of functions are not standalone but depend on other entities within the project. Since LLMs often lack access to the full repository, they tend to invent internal APIs or functions (Dependency Conflicts), leading to runtime errors.  
-**Example:** Without context awareness, a model incorrectly generated the function call generate_default_schema(), while the function actually defined in the project was generate_default_observer_schema_dict(). ![Alt Text](/gse-project/guideline_package/figures/zhang_figure_9.png)
+**Example:** Without context awareness, a model incorrectly generated the function call generate_default_schema(), while the function actually defined in the project was generate_default_observer_schema_dict(). ![Alt Text](figures/zhang_figure_9.png)
 
 ---
 
@@ -127,7 +127,7 @@ For each relevant guideline from readings:
 **Source:** Zhang et al. (2025)
 **Description:** Developers must rigorously verify that generated code aligns with all functional requirements detailed in natural language inputs to prevent the introduction of wrong or missing functionalities.
 **Reasoning:** Functional Requirement Violation is the most prevalent form of hallucination (36.66%) across all studied models, often stemming from a limited capacity to accurately capture and interpret complex user intentions or multi-step logic.
-**Example:** In one instance, a model failed to incorporate a requirement for handling LocalTime based on a specific timezone, resulting in incomplete code that passed syntax checks but failed to meet the task's actual functional needs. ![Alt Text](/gse-project/guideline_package/figures/zhang_figure_3.png)
+**Example:** In one instance, a model failed to incorporate a requirement for handling LocalTime based on a specific timezone, resulting in incomplete code that passed syntax checks but failed to meet the task's actual functional needs. ![Alt Text](figures/zhang_figure_3.png)
 
 ---
 
