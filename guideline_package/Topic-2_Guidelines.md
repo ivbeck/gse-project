@@ -398,9 +398,6 @@ Use json or joblib instead. Serialize the following object securely.
   - `[Blog Post 1] OpenAI Developers Promp Engineering`
   - `[Blog Post 2] OpenAI Developers GPT-5 prompting guide`
 
-**Extracted Guidelines:**  
-Format same as above.
-
 ---
 
 **Guideline 2.2.1: Define Explicit Agent Roles for Coding Tasks**  
