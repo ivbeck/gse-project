@@ -1,69 +1,81 @@
 # Topic-2_Example-Problems.md
 
-> **Template for Student Guideline Packages**  
-> _Fill in the bracketed sections `[...]` with your team's curated content._
+> **Example Problems & Solutions for Coding Guidelines**  
+> _This document demonstrates the practical application of the Topic 2 Coding Guidelines through generic, real-world software engineering scenarios._
 
 ---
 
-## Team Information
+## Example 1: Securing a Legacy Data Serialization Layer
+**Scenario:** A developer needs to update a legacy Python system that currently use `pickle` for storing user session data to disk. The goal is to migrate to a secure, modern format without introducing security vulnerabilities.
 
-**Team Name:** `Team 2`  
-**Topic:** `Coding`  
-**Date:** `12.04.2026`  
-**Authors:** `Iven Beck, Petar Malamov, Denis Maxheimer, Richard Plummer`
+### Applying Guideline 5: Defensive Functional Prompting
+Instead of asking for a specific library (which might lead the LLM to use deprecated methods like `yaml.load`), the developer describes the *requirement* and the *constraint*.
+
+**Prompt:**
+> "I need to replace a `pickle`-based serialization module with a modern, secure alternative in Python. The new implementation must prevent arbitrary code execution during deserialization and be suitable for production session data. Suggest a modern format (like JSON or a safe binary alternative) and provide the implementation for `save_session(data, path)` and `load_session(path)` functions."
+
+**Guideline-Compliant Solution:**
+The LLM selects `json` or a cryptographically signed alternative because it was prompted for *functionality* and *security constraints* rather than a library name.
 
 ---
 
-## 1. Example Problems
+## Example 2: Implementing a Complex String-Parsing Utility
+**Scenario:** A requirement exists to parse a specialized log format: `[TIMESTAMP] (LEVEL) MESSAGE`. The timestamps are in ISO-8601, and the message may contain nested brackets.
 
-> **Note:** These are small, manageable problems that the class can solve using the guidelines. Each problem should take 5-15 minutes to complete. Include 2-4 problems total.
+### Applying Guideline 4: Atomic Task Decomposition
+The developer breaks this down into two smaller prompts rather than one large "build the whole parser" request.
 
-### Problem A_N: `[Title]`
+**Step 1 Prompt:**
+> "Reason through the regex required to extract the `[TIMESTAMP]` and `(LEVEL)` components from string `[2026-04-10T12:00:00Z] (INFO) User logged in`. Show your work using Few-Shot Chain-of-Thought."
 
-**Task Description:**  
-Describe the task clearly. What should the solution accomplish?
+**Step 2 Prompt:**
+> "Now, using the regex logic from step 1, write a Python function `parse_log_entry(line)` that returns a dictionary. Provide 3 diverse test cases including an empty message and a malformed timestamp."
 
-**Starter Artefacts:**
+### Applying Guideline 2: Interactive Test-Driven Validation
+The developer includes the tests in the prompt to ensure the edge cases (like nested brackets in the message) are handled correctly.
 
-```[language]
-// provide necessary code (or similar), link or repo.
-// Provide enough context so students can understand the problem.
+---
+
+## Example 3: Refactoring a Shared Database Utility
+**Scenario:** A large project has a custom `DatabaseManager` class that wraps all SQL queries to prevent injection. A developer needs to add a `fetch_user_by_email` function that follows these internal patterns.
+
+### Applying Guideline 1: Context-Aware Grounding
+The developer provides a minimal context file (`AGENTS.md`) in the prompt.
+
+**AGENTS.md Context Provided:**
+```markdown
+- Database: All queries must use the `QueryBuilder` interface in `src/db/utils.py`.
+- Security: Never use f-strings for SQL queries; use bind parameters.
 ```
 
-**Guidelines to Apply:**  
-List the specific guidelines from your guideline package that students should try applying to this problem.
+**Prompt:**
+> "Following the patterns in our `AGENTS.md` context, implement a `fetch_user_by_email(email)` function. Use the `QueryBuilder` interface from `src.db.utils`."
 
-**Time Estimate:** `[e.g., 10 minutes]`
-
----
-
-## 2. Instructions for Classmates (hands-on)
-
-**How to Use These Problems:**
-
-1. **Baseline Attempt:** Try solving the problem without using any guidelines first. Record your approach and time.
-2. **Guideline-Driven Attempt:** Now apply the guidelines from the corresponding `Topic-XX_Guidelines.md` file. Record your approach and time.
-3. **Compare:** Which approach was faster? Which produced better results? Document your observations.
-4. **Evaluation:** Use the `Topic-XX_Evaluation.md` file to assess your solutions.
+**Guideline-Compliant Solution:**
+The LLM uses `from src.db.utils import QueryBuilder` and follows the bind-parameter rule, preventing a "hallucination" where it might try to use `sqlite3` directly or insecure f-strings.
 
 ---
 
-## 3. References
+## Example 4: Debugging an Intermittent API Timeout
+**Scenario:** A newly generated async function for fetching data from an external API is occasionally failing with a `TimeoutError`, but the error isn't being logged properly.
 
-[1] `[Any references used to create these problems]`  
-[2] `[Any references used to create these problems]`
+### Applying Guideline 3: Iterative Remediation
+The developer uses a "Plan-Execute-Review" loop.
+
+1.  **Draft:** LLM generates a basic async fetch.
+2.  **Failure:** The code fails in the test environment.
+3.  **Remediation:** The developer feeds the traceback back:
+    > "The code failed with `asyncio.TimeoutError` at line 12. Update the implementation to include a retry loop (max 3 tries) and log the failure using our internal logger."
+
+### Applying Guideline 2.3.4: Mandatory Self-Correction Cycles (Reviewer Turn)
+After the fix, the developer prompts:
+> "Act as a security and performance reviewer. Review the retry logic above for potential 'thundering herd' issues or resource leaks. Does it implement exponential backoff?"
 
 ---
 
-## Instructions for Use
-
-1. **Replace all `[...]` placeholders** with your team's specific content
-2. **Choose problems** that are relevant to your topic and SE tasks and align with your guidelines
-3. **Provide sufficient starter code** so students can focus on applying guidelines rather than understanding complex context
-4. **Include language-specific code blocks** (e.g., `python`, `java`, `javascript`)
-5. **Be specific about time estimates** so students can manage their time effectively
-6. **Submit as `Topic-XX_Example-Problems.md`** where `XX` is your topic number
-
----
-
-_Template version: 1.0 | Last updated: 24 February 2026_
+## Example 5: Secure, library-agnostic serialization migration
+- Guideline mapping: 5 (Defensive Prompting), 2.1.11 (quality tests)
+- Scenario: Replace a Python app’s pickle-based session storage with a secure format.
+- Prompt (teacher-facing):
+  - Describe the goal and constraints (prevent deserialization code execution; production-ready; no deprecated libs).
+  - Ask for a concrete implementation of save_session(data, path) and load_session(path) using a secure format (JSON or a safe binary

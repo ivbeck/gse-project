@@ -18,32 +18,110 @@
 
 > **Note:** These are the merged, refined guidelines that your team recommends to the class. Each guideline should be actionable, specific, and usable during real SE/coding tasks.
 
-### Guideline 1: `[Title]`
+### Guideline 1: Context-Aware Grounding via Minimal Manual Documentation
 
 **Description:**  
-What should developers do (i.e., state it clearly and concretely)?
+Ground LLM generation in project-specific context by providing manual, minimal context files (like AGENTS.md) and injecting relevant symbols, dependency graphs, and existing patterns into the prompt, rather than relying on auto-generated summaries or isolated function requests.
 
 **Reasoning:**  
-Explain _why_ this guideline is important. Reference:
-
-- Relevant literature readings
-- Grey literature (blogs, documentation, etc.)
-- LLM experimentation insights
+Zhang et al. (2025) highlight that over 70% of functions in practical development are not standalone but depend on project-specific entities, which LLMs often "hallucinate" if context is missing. Furthermore, Gloaguen et al. (2026) empirically demonstrated that developer-written, minimal context files outperform LLM-generated ones—which can actually reduce success rates by ~3% and increase costs—precisely because they contain non-redundant, specific info.
 
 **Example:**  
-Provide a (simple) illustrative example (code snippet, pseudo-code, or description).
+A minimal context file (AGENTS.md) specifying: 
+```
+- Use `uv` for package management.
+- Logging: Use the custom wrapper in `src/utils/logger.py`.
+- Database: All queries must use the `QueryBuilder` interface.
+```
 
 **When to Apply:**  
-Describe the conditions where this guideline is most effective.
+When working within existing codebases with established architectural patterns, custom internal APIs, or specific configuration requirements.
 
 **When to Avoid:**  
-Describe edge cases or situations where this guideline may not work well.
+Standalone logic puzzles, small greenfield scripts, or when the project has no unique constraints or dependencies.
 
 ---
 
-### Guideline N: `[Title]`
+### Guideline 2: Interactive Test-Driven Validation (TDD-LLM)
 
-(Repeat the same structure for each guideline.)
+**Description:**  
+Supply human-verified unit tests alongside problem statements in the prompt. Use these tests as a "source of truth" to formalize requirements, prune incorrect code candidates, and clarify ambiguous natural language intent through interactive feedback.
+
+**Reasoning:**  
+Mathews & Nagappan (2024) found that providing tests in prompts improves correctness by up to 18% by disambiguating prose. Fakhoury et al. (2024) also showed that execution-based filtering significantly reduces the developer's cognitive load by removing plausibly correct but logically flawed suggestions that humans often miss during manual review.
+
+**Example:**  
+Prompt the LLM: "Write a function to sanitize filenames. Use these tests to verify: 
+```python
+assert sanitize("file name.txt") == "file_name.txt"
+assert sanitize("../../etc/passwd") == "etc_passwd"
+```
+
+**When to Apply:**  
+Algorithmic implementation, data transformation, or any task where functional correctness can be expressed through discrete inputs and outputs.
+
+**When to Avoid:**  
+UI/UX ideation, exploratory design, or generic documentation tasks where automated testing is impractical.
+
+---
+
+### Guideline 3: Iterative Remediation and Self-Correction Loops
+
+**Description:**  
+Implement a structured "Plan-Execute-Review" loop. Treat the first output as a draft; feed failed test execution output (tracebacks, logs) back into the model for remediation. Complement this with a secondary "Reviewer" turn to force the model to critique its own logic for "silent" hallucinations like security flaws or performance bottlenecks.
+
+**Reasoning:**  
+Zhang et al. (2025) identify that silent hallucinations (security risks, incomplete functionality) are the most dangerous as they pass syntax checks. Mathews & Nagappan (2024) demonstrated that 3–5 iterations of remediation using failed test information add a critical ~5% improvement in solving complex problems. Claude and GPT experiments confirm that LLMs are better at identifying errors in existing text than avoiding them during initial generation.
+
+**Example:**  
+1. LLM generates code. 
+2. Execution fails with `ImportError`. 
+3. User feeds back: "Failed with ImportError: module 'x' not found. Update the implementation." 
+4. LLM corrects imports.
+
+**When to Apply:**  
+Production-level code, critical security modules, or complex refactoring tasks where the first-shot success rate is known to be lower.
+
+**When to Avoid:**  
+Extremely simple boilerplate generation where the cost of verification/iteration outweighs the risk of trivial bugs.
+
+---
+
+### Guideline 4: Atomic Task Decomposition with Systematic Reasoning
+
+**Description:**  
+Break complex, multi-step requirements into atomic, testable units (functions/modules) before prompting. For each unit, use Few-Shot Chain-of-Thought (CoT) prompting—providing 2–5 worked examples that include both the reasoning process and the final code.
+
+**Reasoning:**  
+LLM performance degrades significantly with task complexity and context length (Schulhoff et al., 2025). Experimentation with Qwen and Gemma reinforces that atomicity reduces logical drift. Schulhoff's systematic survey identifies Few-Shot CoT as one of the best-performing techniques for guiding models through the "how" and "what" of production-level coding.
+
+**Example:**  
+Instead of "Build a full data ingestion pipeline," first prompt for "A function to parse the raw headers," providing two examples of header parsing logic and the reasoning (e.g., "Strip whitespace, then map to keys").
+
+**When to Apply:**  
+Non-trivial logic, implementing new features, or multi-step architectural changes.
+
+**When to Avoid:**  
+Well-defined standard boilerplate or when using extremely large-context models for very small scripts.
+
+---
+
+### Guideline 5: Defensive Functional Prompting for Library Standards
+
+**Description:**  
+Prompt for desired functionality and non-functional constraints (security, performance, up-to-date standards) rather than naming specific libraries, which may be deprecated or insecure. If a specific library must be used, explicitly state its status and the context of its use (e.g., migration).
+
+**Reasoning:**  
+Lin et al. (2026) found that LLMs, trained on historical data, have a ~55% precision rate when naming libraries (often choosing deprecated ones), but jump to 84–98% precision when prompted via functionality or explicit replacement instructions. This prevents the adoption of known insecure patterns (e.g., `pickle`, `yaml.load`).
+
+**Example:**  
+"Serialize this Python object to a file using a secure, modern format (e.g., JSON or Joblib) that prevents arbitrary code execution."
+
+**When to Apply:**  
+Security-sensitive modules, data serialization, and libraries prone to rapid evolution or deprecation (e.g., AI/ML frameworks).
+
+**When to Avoid:**  
+Legacy codebase maintenance where specific (even if old) library signatures are strictly required for compatibility.
 
 ---
 
@@ -337,9 +415,6 @@ Use json or joblib instead. Serialize the following object securely.
   - `[Blog Post 1] OpenAI Developers Prompt Engineering`
   - `[Blog Post 2] OpenAI Developers GPT-5 prompting guide`
 
-**Extracted Guidelines:**  
-Format same as above.
-
 ---
 
 **Guideline 2.2.1: Define Explicit Agent Roles for Coding Tasks**  
@@ -479,9 +554,6 @@ Format same as above.
 **Prompts Used:**
 
 - `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.]`
-
-**Extracted Guidelines:**  
-Format same as above.
 
 ---
 
