@@ -450,6 +450,26 @@ Format same as above.
 
 ---
 
+**Guideline 2.2.12: Sanitize Sensitive Data and Secrets**  
+**Source:** OpenAI API Key Safety Blog
+**Description:** Prompts must not include real API keys, credentials, or sensitive PII (Personally Identifiable Information).  
+**Reasoning:** LLMs may retain or inadvertently leak data provided in prompts. Furthermore, code generated with "placeholder" secrets is safer to review and prevents accidental commits of real credentials.  
+**Example:** "Generate a Python script to connect to a database using environment variables for the user and password, rather than hardcoding them."
+**When to Apply:** Any time code interacts with external services, databases, or user data.  
+**When to Avoid:** Only in purely local, air-gapped development environments where the LLM is hosted on-premise.
+
+---
+
+**Guideline 2.2.12: Maintain Human-in-the-Loop (HITL) Accountability**  
+**Source:** 'What is human-in-the-loop?' IBM Blog
+**Description:** No AI-generated code should be merged into a codebase without a thorough review and "sign-off" by a human engineer.  
+**Reasoning:** AI is a "stochastic parrot". It lacks true intent and accountability. Humans must remain responsible for the logic, safety, and long-term consequences of the code.
+**Example:** Treating AI code as a "Draft Pull Request" that requires a senior developer's peer review.
+**When to Apply:** Critical systems, enterprise codebases, and collaborative projects.
+**When to Avoid:** Personal "sandbox" projects or learning exercises where the user is the only stakeholder.
+
+---
+
 ### 2.3 Guidelines from LLM Experimentation
 
 **Models Used:**
@@ -508,12 +528,25 @@ Format same as above.
 ## 3. References
 
 **Literature References:**  
-[1] `[Full citation]`  
-[2] `[Full citation]`
+[1] Ziyao Zhang, Chong Wang, Yanlin Wang, Ensheng Shi, Yuchi Ma, Wanjun Zhong, Jiachi Chen, Mingzhi Mao, and Zibin Zheng. 2025. LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation. Proc. ACM Softw. Eng. 2, ISSTA, Article ISSTA022 (July 2025), 23 pages. https://doi.org/10.1145/3728894
+
+[2] S. Fakhoury, A. Naik, G. Sakkas, S. Chakraborty and S. K. Lahiri, "LLM-Based Test-Driven Interactive Code Generation: User Study and Empirical Evaluation," in IEEE Transactions on Software Engineering, vol. 50, no. 9, pp. 2254-2268, Sept. 2024. https://arxiv.org/abs/2404.10100
+
+[3] Noble Saji Mathews and Meiyappan Nagappan. 2024. Test-Driven Development and LLM-based Code Generation. In Proceedings of the 39th IEEE/ACM International Conference on Automated Software Engineering (ASE '24). Association for Computing Machinery, New York, NY, USA, 1583–1594. https://doi.org/10.1145/3691620.3695527
+
+[4] Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents? (2026). https://arxiv.org/abs/2602.11988
+
+[5] Xiangrong Lin, Jiakun Liu, and Lingfeng Bao. Can LLMs Keep Up with Library Changes? An Exploratory Study on LLM-Generated Code. Zhejiang University & Harbin Institute of Technology, China.
+
+[6] Sapkota, Ranjan, Konstantinos I. Roumeliotis, and Manoj Karkee. "Vibe coding vs. agentic coding: Fundamentals and practical implications of agentic ai." arXiv preprint arXiv:2505.19443 (2025). https://arxiv.org/abs/2505.19443
+
+[7] Schulhoff, Sander, et al. "The prompt report: A systematic survey of prompt engineering techniques." arXiv preprint arXiv:2406.06608 (2024). https://arxiv.org/abs/2406.06608
 
 **Grey Literature References:**  
 [1] [`OpenAI Developers Prompt engineering`](https://developers.openai.com/api/docs/guides/prompt-engineering?prompt-example=prompt#choosing-a-model)<br>
 [2] [`OpenAI Developers GPT-5 prompting guide`](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide#agentic-workflow-predictability)
+[3] [`Best Practices for API Key Safety`](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety)
+[4] [`What is human-in-the-loop? `](https://www.ibm.com/think/topics/human-in-the-loop)
 
 **LLM Prompts (Full Log):**  
 [`[Log Link to Github]`](https://raw.githubusercontent.com/ivbeck/gse-project/refs/heads/main/guideline_package/Topic-2_Logs.md)
