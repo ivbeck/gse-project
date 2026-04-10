@@ -55,7 +55,7 @@ Prompt the LLM: "Write a function to sanitize filenames. Use these tests to veri
 ```python
 assert sanitize("file name.txt") == "file_name.txt"
 assert sanitize("../../etc/passwd") == "etc_passwd"
-```"
+```
 
 **When to Apply:**  
 Algorithmic implementation, data transformation, or any task where functional correctness can be expressed through discrete inputs and outputs.
