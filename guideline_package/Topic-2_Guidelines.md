@@ -568,8 +568,13 @@ Format same as above.
 ## 3. References
 
 **Literature References:**  
-[1] `[Full citation]`  
-[2] `[Full citation]`
+[1] Ziyao Zhang, Chong Wang, Yanlin Wang, Ensheng Shi, Yuchi Ma, Wanjun Zhong, Jiachi Chen, Mingzhi Mao, and Zibin Zheng. 2025. LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation. Proc. ACM Softw. Eng. 2, ISSTA, Article ISSTA022 (July 2025), 23 pages. https://doi.org/10.1145/3728894  
+[2] S. Fakhoury, A. Naik, G. Sakkas, S. Chakraborty and S. K. Lahiri, "LLM-Based Test-Driven Interactive Code Generation: User Study and Empirical Evaluation," in IEEE Transactions on Software Engineering, vol. 50, no. 9, pp. 2254-2268, Sept. 2024, doi: 10.1109/TSE.2024.3428972.  
+[3] Noble Saji Mathews and Meiyappan Nagappan. 2024. Test-Driven Development and LLM-based Code Generation. In Proceedings of the 39th IEEE/ACM International Conference on Automated Software Engineering (ASE '24). Association for Computing Machinery, New York, NY, USA, 1583–1594. https://doi.org/10.1145/3691620.3695527  
+[4] Gloaguen et al. 2026. Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?. arXiv preprint arXiv:2602.11988.  
+[5] Xiangrong Lin, Jiakun Liu, and Lingfeng Bao. 2026. Can LLMs Keep Up with Library Changes? An Exploratory Study on LLM-Generated Code. 33rd IEEE International Conference on Software Analysis, Evolution and Reengineering (SANER 2026).  
+[6] Sapkota, Ranjan, Konstantinos I. Roumeliotis, and Manoj Karkee. 2025. Vibe coding vs. agentic coding: Fundamentals and practical implications of agentic ai. arXiv preprint arXiv:2505.19443.  
+[7] Schulhoff, Sander, et al. 2024. The prompt report: A systematic survey of prompt engineering techniques. arXiv preprint arXiv:2406.06608.
 
 **Grey Literature References:**  
 [1] [`OpenAI Developers Prompt engineering`](https://developers.openai.com/api/docs/guides/prompt-engineering?prompt-example=prompt#choosing-a-model)<br>
