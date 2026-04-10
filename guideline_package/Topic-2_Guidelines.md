@@ -517,9 +517,6 @@ Use json or joblib instead. Serialize the following object securely.
 
 - `[What is the best way to use an LLM for coding. We are doing research on that in the Generative Software Engineering course. Be concise and always reason why.]`
 
-**Extracted Guidelines:**  
-Format same as above.
-
 ---
 
 **Guideline 2.3.1: Atomic Task Decomposition**  
